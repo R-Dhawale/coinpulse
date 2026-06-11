@@ -1,9 +1,9 @@
 'use client';
 
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Header = () => {
   const pathname = usePathname();
@@ -16,16 +16,19 @@ const Header = () => {
         </Link>
 
         <nav>
-          <Link href="/" className={cn('nav-link', { 'active': pathname === '/', 'is-home': true })}>Home</Link>
-          
-          <p>Search Modal</p>
-        
-          <Link href="/coins" className={cn('nav-link', { 'active': pathname === '/coins' })}>All Coins</Link>
+          <Link href="/" className={cn('nav-link', { active: pathname === '/', 'is-home': true })}>
+            Home
+          </Link>
 
+          <p>Search Modal</p>
+
+          <Link href="/coins" className={cn('nav-link', { active: pathname === '/coins' })}>
+            All Coins
+          </Link>
         </nav>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

@@ -1,7 +1,33 @@
-import React from 'react'
+import DataTable from '@/components/DataTable';
+import CoinOverview from '@/components/home/CoinOverview';
+import TrendingCoins from '@/components/home/TrendingCoins';
+import {
+  CoinOverviewFallback,
+  TrendingCoinsFallback,
+} from '@/components/home/fallback';
+import { fetcher } from '@/lib/coingecko.actions';
+import { cn, formatCurrency } from '@/lib/utils';
+import Link from 'next/link';
+import { Suspense } from 'react';
 
-const page = () => {
-  return <p className="text-3xl text-indigo-500">CoinPulse</p>
-}
+const Page = async () => {
+  return (
+    <main className="main-container">
+      <section className="home-grid">
+        <Suspense fallback={<CoinOverviewFallback />}>
+          <CoinOverview />
+        </Suspense>
 
-export default page
+        <Suspense fallback={<TrendingCoinsFallback />}>
+          <TrendingCoins />
+        </Suspense>
+      </section>
+
+      <section className="w-full mt-7 space-y-4">
+        <p>Categories</p>
+      </section>
+    </main>
+  );
+};
+
+export default Page;

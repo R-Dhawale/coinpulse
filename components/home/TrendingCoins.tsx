@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import DataTable from '../DataTable';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 
 const TrendingCoins = async () => {
     let trendingCoins;
@@ -60,7 +60,7 @@ const TrendingCoins = async () => {
       {
         header: 'Price',
         cellClassName: 'price-cell',
-        cell: (coin) => coin.item.data.price,
+        cell: (coin) => formatCurrency(coin.item.data.price),
       },
     ];
 

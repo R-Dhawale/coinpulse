@@ -93,7 +93,7 @@ export const getChartConfig = (
 
 export const PERIOD_CONFIG: Record<
   Period,
-  { days: number | string }
+  { days: number | string; interval?: 'hourly' | 'daily' }
 > = {
   daily: { days: 1 },
   weekly: { days: 7 },

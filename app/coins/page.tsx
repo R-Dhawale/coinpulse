@@ -8,10 +8,11 @@ import CoinsPagination from '@/components/CoinsPagination';
 
 
 const Coins = async ({ searchParams }: NextPageProps) => {
-  const { page } = await searchParams;
-
-  const currentPage = Number(page) || 1;
-  const perPage = 10;
+    const { page } = await searchParams;
+    const rawPage = Array.isArray(page) ? page[0] : page;
+    const parsedPage = Number.parseInt(rawPage ?? "1", 10);
+    const currentPage = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+    const perPage = 10;
 
     const coinsData = await fetcher<CoinMarketData[]>('/coins/markets',
     {
@@ -74,7 +75,8 @@ const Coins = async ({ searchParams }: NextPageProps) => {
 
   const hasMorePages = coinsData.length === perPage;
 
-  const estimatedTotalPages = currentPage >= 100 ? Math.ceil(currentPage / 100) * 100 + 100 : 100;
+  const estimatedTotalPages = hasMorePages ? currentPage >= 100 ? Math.ceil(currentPage / 100) * 100 + 100
+      : 100 : currentPage;
 
   return (
     <main id="coins-page">

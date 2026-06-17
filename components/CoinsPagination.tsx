@@ -32,12 +32,17 @@ const CoinsPagination = ({ currentPage, totalPages, hasMorePages }: Pagination) 
                 <div className="pagination-pages">
                     {pageNumbers.map((page, index) => (
                         <PaginationItem key={index}>
-                            {page === ELLIPSIS ? <span className="ellipsis">...</span> : (
+                            {page === ELLIPSIS ? (
+                                <span className="ellipsis">...</span>
+                            ) : (
                                 <PaginationLink onClick={() => handlePageChange(page)} className={cn('page-link', {
                                     'page-link-active': currentPage === page
-                                })}>{page}</PaginationLink>
+                                })}
+                                >
+                                    {page}
+                                </PaginationLink>
                             )}
-                </PaginationItem>
+                        </PaginationItem>
                     ))}
                 </div>
                 

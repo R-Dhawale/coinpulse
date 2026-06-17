@@ -1,13 +1,12 @@
 import DataTable from '@/components/DataTable';
+import Categories from '@/components/home/Categories';
 import CoinOverview from '@/components/home/CoinOverview';
 import TrendingCoins from '@/components/home/TrendingCoins';
 import {
+  CategoriesFallback,
   CoinOverviewFallback,
   TrendingCoinsFallback,
 } from '@/components/home/fallback';
-import { fetcher } from '@/lib/coingecko.actions';
-import { cn, formatCurrency } from '@/lib/utils';
-import Link from 'next/link';
 import { Suspense } from 'react';
 
 const Page = async () => {
@@ -24,7 +23,9 @@ const Page = async () => {
       </section>
 
       <section className="w-full mt-7 space-y-4">
-        <p>Categories</p>
+        <Suspense fallback={<CategoriesFallback />}>
+          <Categories />
+        </Suspense>
       </section>
     </main>
   );

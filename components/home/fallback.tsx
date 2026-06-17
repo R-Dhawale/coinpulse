@@ -41,7 +41,9 @@ export const TrendingCoinsFallback = () => {
     },
   ];
 
-  const skeletonData = Array(6).fill(null).map((_, i) => ({ id: `skeleton-${i}` }));
+  const skeletonData = Array(6)
+    .fill(null)
+    .map((_, i) => ({ id: `skeleton-${i}` }));
 
   return (
     <div id="trending-coins">
@@ -56,6 +58,58 @@ export const TrendingCoinsFallback = () => {
           bodyCellClassName="py-2!"
         />
       </div>
+    </div>
+  );
+};
+
+export const CategoriesFallback = () => {
+  const skeletonColumns: DataTableColumn<any>[] = [
+    {
+      header: 'Category',
+      cellClassName: 'category-cell',
+      cell: () => <div className="h-4 w-24 bg-dark-400 rounded animate-pulse" />,
+    },
+    {
+      header: 'Top Gainers',
+      cellClassName: 'top-gainers-cell',
+      cell: () => (
+        <div className="flex gap-2">
+          <div className="h-7 w-7 bg-dark-400 rounded animate-pulse" />
+          <div className="h-7 w-7 bg-dark-400 rounded animate-pulse" />
+          <div className="h-7 w-7 bg-dark-400 rounded animate-pulse" />
+        </div>
+      ),
+    },
+    {
+      header: '24h Change',
+      cellClassName: 'change-header-cell',
+      cell: () => <div className="h-4 w-12 bg-dark-400 rounded animate-pulse" />,
+    },
+    {
+      header: 'Market Cap',
+      cellClassName: 'market-cap-cell',
+      cell: () => <div className="h-4 w-20 bg-dark-400 rounded animate-pulse" />,
+    },
+    {
+      header: '24h Volume',
+      cellClassName: 'volume-cell',
+      cell: () => <div className="h-4 w-20 bg-dark-400 rounded animate-pulse" />,
+    },
+  ];
+
+  const skeletonData = Array(10)
+    .fill(null)
+    .map((_, i) => ({ id: `skeleton-${i}` }));
+
+  return (
+    <div id="categories" className="custom-scrollbar">
+      <h4>Top Categories</h4>
+      <DataTable
+        columns={skeletonColumns}
+        data={skeletonData}
+        rowKey={(_, index) => index}
+        tableClassName="mt-3"
+      />
     </div>
   );
 };

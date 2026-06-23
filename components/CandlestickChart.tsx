@@ -26,13 +26,15 @@ const CandlestickChart = ({
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
-  const prevOhlcDataLength = useRef<number>(data?.length || 0);
+    const prevOhlcDataLength = useRef<number>(data?.length || 0);
+    const ohlcRequestSeq = useRef(0);
 
   const [period, setPeriod] = useState(initialPeriod);
   const [ohlcData, setOhlcData] = useState<OHLCData[]>(data ?? []);
   const [isPending, startTransition] = useTransition();
 
-  const fetchOHLCData = async (selectedPeriod: Period) => {
+    const fetchOHLCData = async (selectedPeriod: Period) => {
+    const requestId = ++ohlcRequestSeq.current;
     try {
       const { days, interval } = PERIOD_CONFIG[selectedPeriod];
 
@@ -42,6 +44,7 @@ const CandlestickChart = ({
         interval,
         precision: 'full',
       });
+      if (requestId !== ohlcRequestSeq.current) return;
 
       startTransition(() => {
         setOhlcData(newData ?? []);

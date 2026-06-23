@@ -25,17 +25,27 @@ export const useCoinGeckoWebSocket = ({
         const send = (payload: Record<string, unknown>) => ws.send(JSON.stringify(payload));
 
         const handleMessage = (event: MessageEvent) => {
-            const msg: WebSocketMessage = JSON.parse(event.data);
+            let msg: WebSocketMessage;
+            try {
+              msg = JSON.parse(event.data);
+            } catch {
+              return;
+            }
 
             if (msg.type === 'ping') {
                 send({ type: 'pong' });
                 return;
             }
-            if (msg.type === 'confirm_subscription') {
-                const { channel } = JSON.parse(msg?.identifier ?? '');
 
-                subscribed.current.add(channel);
+            if (msg.type === 'confirm_subscription' && typeof msg.identifier === 'string') {
+                try {
+                  const { channel } = JSON.parse(msg.identifier);
+                  if (channel) subscribed.current.add(channel);
+                } catch {
+                  return;
+                }
             }
+            
             if (msg.c === 'C1') {
                 setPrice({
                 usd: msg.p ?? 0,
@@ -47,6 +57,7 @@ export const useCoinGeckoWebSocket = ({
                 timestamp: msg.t,
                 });
             }
+            
             if (msg.c === 'G2') {
                 const newTrade: Trade = {
                 price: msg.pu,
@@ -58,6 +69,7 @@ export const useCoinGeckoWebSocket = ({
 
                 setTrades((prev) => [newTrade, ...prev].slice(0, 7));
             }
+            
             if (msg.ch === 'G3') {
                 const timestamp = msg.t ?? 0;
 
@@ -77,7 +89,11 @@ export const useCoinGeckoWebSocket = ({
 
         ws.onmessage = handleMessage;
 
-        ws.onclose = () => setIsWsReady(true)
+        ws.onclose = () => {
+          setIsWsReady(false);
+          subscribed.current.clear();
+          wsRef.current = null;
+        };
 
         ws.onerror = (error) => {
         setIsWsReady(false);

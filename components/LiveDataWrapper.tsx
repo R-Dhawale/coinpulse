@@ -81,7 +81,7 @@ const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveD
           <DataTable
             columns={tradeColumns}
             data={trades}
-            rowKey={(_, index) => index}
+            rowKey={(trade) => `${trade.timestamp}-${trade.price}-${trade.amount}-${trade.type}`}
             tableClassName="trades-table"
           />
         </div>

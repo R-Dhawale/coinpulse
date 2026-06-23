@@ -21,34 +21,45 @@ export default function SearchModal({ isOpen, onClose }: Props) {
   const [coins, setCoins] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const searchCoins = async () => {
-      if (!query.trim()) {
-        setCoins([]);
-        return;
-      }
+    useEffect(() => {
+        if (!isOpen) return;
 
-      setLoading(true);
+        const controller = new AbortController();
+        const searchCoins = async () => {
+            if (!query.trim()) {
+                setCoins([]);
+                setLoading(false);
+                return;
+            }
 
-      try {
-        const response = await fetch(
-          `https://api.coingecko.com/api/v3/search?query=${query}`
-        );
+            setLoading(true);
 
-        const data = await response.json();
+            try {
+                const response = await fetch(
+                    `https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(query)}`, { signal: controller.signal }
+                );
+                if (!response.ok) throw new Error(`Search failed: ${response.status}`);
 
-        setCoins(data.coins || []);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+                const data = await response.json();
 
-    const timeout = setTimeout(searchCoins, 300);
+                setCoins(data.coins || []);
+            } catch (error) {
+                if ((error as Error).name !== 'AbortError') {
+                    console.error(error);
+                    setCoins([]);
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    return () => clearTimeout(timeout);
-  }, [query]);
+        const timeout = setTimeout(searchCoins, 300);
+
+        return () => {
+            clearTimeout(timeout);
+            controller.abort();
+        };
+    }, [query, isOpen]);
 
   if (!isOpen) return null;
 
